@@ -5,7 +5,7 @@
 
 # --- CONFIGURATION ---
 if [ -f ".env" ]; then
-    GHOST_SHEET_ID=$(grep '^GHOST_SHEET_ID=' .env | cut -d '=' -f2)
+    GHOST_SHEET_ID=$(grep '^GHOST_SHEET_ID=' .env | tail -n 1 | cut -d '=' -f2 | tr -d '\r')
 fi
 
 DEFAULT_SHEET="$GHOST_SHEET_ID"
@@ -14,13 +14,25 @@ if [ -z "$DEFAULT_SHEET" ]; then
     echo -e "\n\033[93m   [FIRST LAUNCH] Please enter your Google Sheet ID or full URL >> \033[0m"
     read -p "   >> " user_sheet
     
+    while [ -z "$user_sheet" ]; do
+        echo -e "\033[91m   [ERROR] Sheet ID cannot be empty.\033[0m"
+        read -p "   >> " user_sheet
+    done
+    
     if [[ "$user_sheet" == *"spreadsheets/d/"* ]]; then
         DEFAULT_SHEET=$(echo "$user_sheet" | sed -n 's/.*spreadsheets\/d\/\([a-zA-Z0-9-_]*\).*/\1/p')
     else
         DEFAULT_SHEET="$user_sheet"
     fi
     
-    echo "GHOST_SHEET_ID=$DEFAULT_SHEET" >> .env
+    if [ -f ".env" ]; then
+        grep -v '^GHOST_SHEET_ID=' .env > .env.tmp
+        cat .env.tmp > .env
+        rm -f .env.tmp
+        echo "GHOST_SHEET_ID=$DEFAULT_SHEET" >> .env
+    else
+        echo "GHOST_SHEET_ID=$DEFAULT_SHEET" > .env
+    fi
     echo -e "\033[92m   [SUCCESS] Sheet ID saved to .env!\033[0m"
 fi
 ENGINE_DIR=$(dirname "$0")
@@ -164,6 +176,20 @@ while true; do
             sysctl -n hw.ncpu | awk '{print "Cores: " $1}'
             python3 --version
             uv --version
+            echo -e "\033[96m[DIAGNOSTICS] Checking missing dependencies...\033[0m"
+            if [ -d "$VENV_DIR" ]; then
+                cd "$ENGINE_DIR"
+                source .venv/bin/activate
+                MISSING=$(uv pip install -r requirements.txt --dry-run 2>&1 | grep -i 'Would install')
+                if [ -n "$MISSING" ]; then
+                    echo -e "\033[91m[WARNING] Missing dependencies detected. Run option [6] SETUP ENGINE.\033[0m"
+                    uv pip install -r requirements.txt --dry-run | grep -i 'Would install' -A 20
+                else
+                    echo -e "\033[92m[SUCCESS] All dependencies are installed.\033[0m"
+                fi
+            else
+                echo -e "\033[91m[ERROR] Environment not set up. Run option [6] SETUP ENGINE.\033[0m"
+            fi
             read -p "Press Enter to return..."
             ;;
         8)
