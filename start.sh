@@ -93,25 +93,45 @@ run_engine() {
     read -p "Press Enter to return to menu..."
 }
 
+check_updates() {
+    echo -e "\033[96m[UPDATE] Checking for new updates from git...\033[0m"
+    git fetch origin
+    
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse @{u})
+    
+    if [ "$LOCAL" = "$REMOTE" ]; then
+        echo -e "\033[92m[UPDATE] Ghost Engine is already up-to-date.\033[0m"
+        sleep 2
+    else
+        echo -e "\033[93m[UPDATE] Updates found! Pulling latest changes...\033[0m"
+        git pull
+        echo -e "\033[92m[SUCCESS] Engine updated successfully!\033[0m"
+        echo -e "\033[91m[CRITICAL] Please manually restart the script to apply changes.\033[0m"
+        exit 0
+    fi
+}
+
 # --- MAIN MENU ---
 while true; do
     print_banner
-    echo -e "\033[97m   [1] Full Run         \033[90m(Full Single-Pass Strategy)\033[0m"
-    echo -e "\033[97m   [2] Live Recon Only  \033[90m(Skip archives | Fast sweep)\033[0m"
-    echo -e "\033[97m   [3] Archival Recon Only\033[90m(Skip live | Deep history)\033[0m"
-    echo -e "\033[97m   [4] Web Recon Only   \033[90m(Skip live and archives | Deep Web Search)\033[0m"
-    echo -e "\033[97m   [5] SMART RESUME     \033[90m(Continue from GSheet Status)\033[0m"
-    echo -e "\033[97m   [6] SETUP ENGINE     \033[90m(Reinstall Dependencies)\033[0m"
-    echo -e "\033[97m   [7] DIAGNOSTICS      \033[90m(System Health Check)\033[0m"
-    echo -e "\033[97m   [8] CLEAR LOGS       \033[90m(Truncate log files)\033[0m"
-    echo -e "\033[91m   [9] EXIT             \033[90m(Close Hub)\033[0m"
+    echo -e "\033[97m   [1] FULL RUN         \033[90m(FULL SINGLE-PASS STRATEGY)\033[0m"
+    echo -e "\033[97m   [2] LIVE RECON ONLY  \033[90m(SKIP ARCHIVES | FAST SWEEP)\033[0m"
+    echo -e "\033[97m   [3] ARCHIVAL RECON ONLY\033[90m(SKIP LIVE | DEEP HISTORY)\033[0m"
+    echo -e "\033[97m   [4] WEB RECON ONLY   \033[90m(SKIP LIVE AND ARCHIVES | DEEP WEB SEARCH)\033[0m"
+    echo -e "\033[97m   [5] SMART RESUME     \033[90m(CONTINUE FROM GSHEET STATUS)\033[0m"
+    echo -e "\033[97m   [6] SETUP ENGINE     \033[90m(REINSTALL DEPENDENCIES)\033[0m"
+    echo -e "\033[97m   [7] DIAGNOSTICS      \033[90m(SYSTEM HEALTH CHECK)\033[0m"
+    echo -e "\033[97m   [8] CLEAR LOGS       \033[90m(TRUNCATE LOG FILES)\033[0m"
+    echo -e "\033[97m   [9] CHECK UPDATES    \033[90m(PULL LATEST CODE FROM GIT)\033[0m"
+    echo -e "\033[91m   [10] EXIT            \033[90m(CLOSE HUB)\033[0m"
     echo ""
-    read -p "   [GHOST] Select Strategy >> " choice
+    read -p "   [GHOST] SELECT STRATEGY >> " choice
 
     case $choice in
         1|2|3|4|5)
             echo ""
-            read -p "   [GHOST] Select Output Format [1] Text Only (Faster) [2] HTML >> " dtype_choice
+            read -p "   [GHOST] SELECT OUTPUT FORMAT [1] TEXT ONLY (FASTER) [2] HTML >> " dtype_choice
             data_type="text"
             if [ "$dtype_choice" == "2" ]; then
                 data_type="html"
@@ -154,6 +174,9 @@ while true; do
             sleep 1
             ;;
         9)
+            check_updates
+            ;;
+        10)
             echo -e "\033[90mTerminating session...\033[0m"
             exit 0
             ;;
