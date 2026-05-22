@@ -4,7 +4,25 @@
 # 💀 "Reviving the Dead with Spectral Precision"
 
 # --- CONFIGURATION ---
-DEFAULT_SHEET="1WvqHhXQcFSOuGnDW87J2Elv29uMEMAWiTknB4BWzlD4"
+if [ -f ".env" ]; then
+    GHOST_SHEET_ID=$(grep '^GHOST_SHEET_ID=' .env | cut -d '=' -f2)
+fi
+
+DEFAULT_SHEET="$GHOST_SHEET_ID"
+
+if [ -z "$DEFAULT_SHEET" ]; then
+    echo -e "\n\033[93m   [FIRST LAUNCH] Please enter your Google Sheet ID or full URL >> \033[0m"
+    read -p "   >> " user_sheet
+    
+    if [[ "$user_sheet" == *"spreadsheets/d/"* ]]; then
+        DEFAULT_SHEET=$(echo "$user_sheet" | sed -n 's/.*spreadsheets\/d\/\([a-zA-Z0-9-_]*\).*/\1/p')
+    else
+        DEFAULT_SHEET="$user_sheet"
+    fi
+    
+    echo "GHOST_SHEET_ID=$DEFAULT_SHEET" >> .env
+    echo -e "\033[92m   [SUCCESS] Sheet ID saved to .env!\033[0m"
+fi
 ENGINE_DIR=$(dirname "$0")
 VENV_DIR="$ENGINE_DIR/.venv"
 
@@ -32,9 +50,9 @@ print_banner() {
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 EOF
     echo -e "\033[0m"
-    echo -e "\033[1;97m   GHOST UNIFIED RECON \033[0m\033[90m| \033[96mSingularity v15.0\033[0m"
+    echo -e "\033[1;97m   GHOST RECON \033[0m\033[90m| \033[96mSingularity v15.0\033[0m"
     echo -e "\033[90m   "$(printf '─%.0s' {1..54})"\033[0m"
-    echo -e "\033[3;37m   \"One Pass. Total Recovery.\"\033[0m"
+    echo -e "\033[3;37m   \"Recon team ready for dead domain revival!\"\033[0m"
     echo ""
 }
 

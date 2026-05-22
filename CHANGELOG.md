@@ -1,6 +1,15 @@
 # CHANGELOG
 All notable changes to this project are documented here.
 
+## [2026-05-22] Removed orchestrate.py and updated start.sh banner
+Files changed:
+- orchestrate.py
+- start.sh
+Reason:
+Removed broken and redundant `orchestrate.py` as `start.sh` fully supersedes its functionality. Updated the banner text in `start.sh` to reflect the new messaging.
+Related tests:
+N/A
+
 ## [2026-05-19] Robust Quality Filtering & Sitemap / SafeFrame Leak Prevention
 Files changed:
 - utils/scraper.py
