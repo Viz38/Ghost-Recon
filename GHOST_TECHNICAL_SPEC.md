@@ -4,7 +4,7 @@
 Ghost v15.0 introduces the **Unified Spectral Engine**, consolidating the previously fragmented P1 and P2 architectures into a single, high-fidelity recovery pipeline. It implements a "Singularity" workflow that dynamically escalates from live stealth probes to deep forensic recovery in a single pass.
 
 ### 🔄 The Unified Lifecycle Flow
-1. **Orchestration**: `orchestrate.py` manages the root environment using `uv` and executes the core engine.
+1. **Orchestration**: The `start.sh` script interactively manages the root environment using `uv`, provides a unified control hub, and executes the core Python engine (`ghost.py`).
 2. **Singularity Pass**:
     - **Step A (Live Probe)**: A rapid stealth probe using randomized headers and absolute browser fallback.
     - **Step B (Forensic Escalation)**: If live content is sparse (<1500 chars), the engine triggers a 31-source archival discovery.

@@ -1,6 +1,15 @@
 # CHANGELOG
 All notable changes to this project are documented here.
 
+## [2026-05-22] Documentation Update for start.sh Orchestrator
+Files changed:
+- README.md
+- GHOST_TECHNICAL_SPEC.md
+Reason:
+Updated project documentation to reflect the removal of `orchestrate.py`. The documentation now correctly details `start.sh` as the primary unified orchestrator, along with its full interactive menu and setup features.
+Related tests:
+N/A
+
 ## [2026-05-22] Removed orchestrate.py and updated start.sh banner
 Files changed:
 - orchestrate.py

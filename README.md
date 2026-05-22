@@ -49,14 +49,22 @@ Ghost escalates discovery to specialized regional and academic archives:
 - `uv` (Fastest Python package manager)
 - Google Sheet Credentials (`credentials.json`)
 
-### Quick Start
-The easiest way to run the engine directly:
+### Quick Start & Orchestrator
+The Ghost engine is entirely managed through a single interactive shell script. This acts as the main orchestrator, handling environment setup, dependencies (`uv`), and providing a full interactive menu for executing all recon modes.
+
+Run the interactive orchestrator:
 ```bash
 ./start.sh
 ```
 
-### Main Orchestrator
-To manage diagnostic tools, environments, and runs interactively:
-```bash
-python3 orchestrate.py
-```
+**Available Interactive Modes:**
+- `[1] FULL RUN`: Full Single-Pass Strategy (Live + Archival + Web Search)
+- `[2] LIVE RECON ONLY`: Fast live sweep, skips archives
+- `[3] ARCHIVAL RECON ONLY`: Deep historical search, skips live
+- `[4] WEB RECON ONLY`: Deep Web Search fallback, skips live/archives
+- `[5] SMART RESUME`: Continues from the Google Sheet "Scan Status"
+- `[6] SETUP ENGINE`: Reinstall dependencies automatically via `uv`
+- `[7] DIAGNOSTICS`: System Health Check (RAM, CPU)
+- `[8] CLEAR LOGS`: Truncate log files
+- `[9] CHECK UPDATES`: Pulls latest engine code from git
+- `[10] EXIT`: Close Hub
